@@ -1,0 +1,35 @@
+# Secrets and local credentials
+.env
+.env.*
+!.env.example
+aws_config/
+.aws/
+.ssh/
+.streamlit/secrets.toml
+*.pem
+*.key
+*.ppk
+
+# Python environments and generated files
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Local datasets, exports, models, reports, and runtime files
+datasets/raw/
+datasets/processed/
+backend/ml/models/*.pkl
+backend/ml/results/
+backend/etl/logs/
+backend/etl/reports/
+reports/
+dist/
+jars/
+*.log
+*.sqlite
+*.sqlite3
+*.db

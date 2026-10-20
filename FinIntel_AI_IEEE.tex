@@ -1,0 +1,1026 @@
+\documentclass[conference]{IEEEtran}
+
+% ------------------------------------------------
+% Packages
+% ------------------------------------------------
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{float}
+\usepackage{url}
+\usepackage{cite}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{placeins}
+
+\hypersetup{
+colorlinks=true,
+linkcolor=blue,
+citecolor=blue,
+urlcolor=blue
+}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{
+FinIntel AI: An Enterprise Banking Intelligence Platform Integrating
+Microservices, Cloud-Based Data Engineering, Explainable Artificial
+Intelligence, and Predictive Analytics
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\author{
+\IEEEauthorblockN{
+Parit Gupta $^{1}$,
+Kumaran K $^{2}$,
+Chaitanya Singh $^{3}$,
+Dhruve Theypra $^{4}$
+}
+\IEEEauthorblockA{
+Department of Computer Science and Engineering\\
+Vellore Institure Of Technology\\
+Chennai, India\\
+Email: dhruve.theypra2023@vitstudent.ac.in
+}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\maketitle
+\begin{abstract}
+
+Banking platforms increasingly need to combine dependable transaction handling with timely analysis of information originating from different systems. This paper describes \textbf{FinIntel AI}, a banking intelligence platform that brings operational services, data pipelines, predictive models, and Explainable Artificial Intelligence (XAI) into a microservices-oriented design. PostgreSQL provides a shared relational data layer, while Amazon S3, AWS Glue, AWS Lambda, Amazon RDS, and Amazon EC2 support the proposed cloud storage, processing, and deployment workflow. Separate services cover identity and access, customer and account operations, lending, fraud analysis, credit risk, reporting, and model inference. SHAP and LIME are used to interpret predictions, and prediction histories are retained to support review and audit activities. Banking entities are organized in a normalized database, with FastAPI interfaces connecting services to a React dashboard. The work presents an integrated architecture in which data engineering and interpretable predictive functions can be developed alongside everyday banking processes.
+
+\end{abstract}
+\begin{IEEEkeywords}
+
+Enterprise Banking,
+Artificial Intelligence,
+Machine Learning,
+Explainable AI,
+SHAP,
+LIME,
+Microservices,
+FastAPI,
+React,
+PostgreSQL,
+Cloud Computing,
+AWS,
+Data Engineering,
+Fraud Detection,
+Loan Approval Prediction,
+Credit Risk Assessment,
+Financial Analytics,
+Business Intelligence,
+REST API,
+Data Warehouse
+
+\end{IEEEkeywords}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+Digital channels have changed both the scale and the diversity of information handled by banks. A single institution may need to coordinate customer profiles, account activity, lending decisions, fraud alerts, internal reporting, and compliance checks across several applications. The growing use of mobile banking and online payments increases the importance of dependable data exchange between those functions. Systems supporting this environment therefore need to be secure, responsive, and adaptable without sacrificing the consistency of financial records.
+
+In many banking environments, functions introduced at different times continue to run in separate applications. Customer records may be maintained independently of transactions, loans, support cases, or branch reports. Fragmented ownership of information makes reconciliation difficult and can lead to repeated records or differences between departmental reports. It also obstructs analyses that require a complete view of the same customer or transaction across multiple business activities.
+
+As transactions and customer interactions become more continuous, banking software must accommodate both operational workloads and analytical tasks. Fraud screening, credit evaluation, loan processing, and performance monitoring rely on data captured in different parts of the institution. Expanding a tightly integrated legacy application to support each new requirement can create deployment dependencies and complicate access to consistent information. These limitations motivate an architecture in which banking functions can evolve separately while sharing well-defined data interfaces.
+
+A microservices design divides a large application into services organized around business responsibilities. For example, authentication, account operations, lending, and fraud analysis can expose their functions through APIs without requiring all modules to be released together. Individual services can then be maintained or scaled according to their own workload. The resulting separation is useful in banking applications, although service boundaries, API reliability, and data consistency still require careful design.
+
+Predictive methods now support a range of financial tasks, including screening transactions, estimating credit risk, and informing lending decisions. Tree-based ensembles and other supervised models can identify patterns that are difficult to express as fixed business rules. Prediction quality alone, however, is insufficient for sensitive financial decisions: staff also need to examine why a particular outcome was produced. A model that cannot be interrogated creates practical difficulties for review, error analysis, fairness assessment, and accountability.
+
+Explainable Artificial Intelligence (XAI) provides methods for examining model behaviour. SHapley Additive exPlanations (SHAP) estimate how individual features contribute to a prediction, whereas Local Interpretable Model-Agnostic Explanations (LIME) approximates a model's response around a particular input. Within a banking workflow, these explanations can help analysts inspect outputs and identify factors requiring further review. They complement, rather than replace, formal validation and appropriate controls over automated decisions.
+
+Cloud infrastructure provides a way to separate storage, transformation, application hosting, and database administration. In the proposed AWS-oriented design, Amazon S3 stores source files, Glue runs ETL tasks, Lambda coordinates event-driven steps, RDS hosts relational data, and EC2 offers compute capacity for deployed components. This division makes the pipeline easier to describe and extend, while the actual operating cost and performance would depend on workload characteristics and deployment settings.
+
+FinIntel AI is designed to connect banking operations with analytical services through a common architectural framework. Customer management, accounts, transactions, applications for credit, fraud records, branch activity, support requests, and marketing data are treated as related domains rather than isolated datasets. Service interfaces coordinate business functionality, and PostgreSQL provides a structured repository for records used across these domains. This arrangement is intended to reduce the friction of preparing consistent data for reports and predictive tasks.
+
+The data model contains fifteen related entities covering customers, accounts, transactions, loan applications, credit history, fraud records, products, branch performance, support cases, campaigns, prediction history, employees, users, roles, and branches. Keys and constraints express the relationships needed to connect those records. The relational design supports transactional checks and provides organized inputs for downstream ETL and machine learning operations.
+
+Three prediction use cases are considered: loan approval, transaction fraud, and credit risk. Their inference functions are treated as independent services exposed through FastAPI endpoints. The workflow also incorporates SHAP and LIME so a prediction can be accompanied by information about influential inputs. Keeping model outputs and explanations together with a prediction history supports later inspection by authorized banking personnel.
+
+A React interface built with Material UI provides a consolidated view of the platform's operational and analytical outputs. Its planned views include customer activity, branches, fraud alerts, transactions, loan decisions, risk distributions, and earlier predictions. Users access these functions through JWT-based authentication and role-specific permissions, reflecting the different information needs of administrators, loan officers, analysts, and branch managers.
+
+The proposed design combines API-based services, relational storage, containerized deployment, data pipelines, and interpretable prediction functions within one system boundary. Separating these concerns creates room to add other capabilities later, such as streaming ingestion or privacy-aware learning. Such extensions would need additional integration, security, and performance testing before production use.
+
+The objective is to present and evaluate an integrated prototype for banking data management and intelligence. The work focuses on how operational modules, an ETL process, analytical interfaces, and explainable predictive services can be organized together. Key design considerations include maintainability, consistent records, audit support, and the ability to extend individual services as requirements change.
+
+The major contributions of this research are summarized as follows:
+
+\begin{itemize}
+
+\item Development of a cloud-native enterprise banking platform using a modular microservices architecture.
+
+\item Design of a normalized PostgreSQL database consisting of fifteen relational entities supporting enterprise banking operations.
+
+\item Integration of cloud-based ETL pipelines using Amazon S3, AWS Glue, AWS Lambda, Amazon RDS, and EC2.
+
+\item Development of machine learning services for loan approval prediction, fraud detection, and credit risk assessment.
+
+\item Integration of Explainable Artificial Intelligence using SHAP and LIME for transparent decision support.
+
+\item Development of RESTful APIs using FastAPI with JWT-based authentication and role-based access control.
+
+\item Implementation of a React-based enterprise dashboard providing real-time operational analytics and visualization.
+
+\item Presentation of a scalable, extensible, and production-oriented reference architecture suitable for next-generation intelligent banking systems.
+
+\end{itemize}
+
+The paper first reviews related work in fraud detection, AI adoption, banking modernization, and financial analytics. It then describes the data engineering methodology and supporting architecture, followed by implementation observations and a discussion of the system components. The final section summarizes the design and identifies opportunities for further validation and extension.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Literature Review}
+
+% Author-year names are printed at the start; nocite links each entry to the existing IEEE bibliography.
+% One paper has unidentified authors; verify its citation against references.bib before submission.
+
+\noindent\textbf{Ayub et al. (2025)}\nocite{Ayub2025DeepLearningFraud} --- \emph{Deep Learning for Real-Time Fraud Detection: Enhancing Credit Card Security in Banking Systems}. The authors propose a deep learning framework for real-time credit card fraud detection using Long Short-Term Memory (LSTM) networks to improve banking security. The study addresses the limitations of traditional rule-based and statistical fraud detection systems, which struggle to identify evolving fraud patterns and sequential transaction behavior. A highly imbalanced credit card transaction dataset was preprocessed using feature engineering techniques before training the LSTM model to recognize temporal relationships in transaction sequences. The proposed model was evaluated against Logistic Regression, Decision Tree, and Random Forest classifiers using accuracy, precision, recall, and F1-score. Experimental results showed that the LSTM model achieved 99.38 percent accuracy, 99.40 percent precision, 99.22 percent recall, and a 99.31 percent F1-score, outperforming all baseline models. The authors attribute this performance to the LSTM's ability to capture long-term transaction dependencies. The paper also discusses techniques such as SMOTE and cost-sensitive learning for handling class imbalance. Although the framework demonstrates excellent real-time fraud detection capability, it provides limited discussion on computational complexity, scalability, deployment challenges, and explainable AI, which remain important considerations for practical banking applications.
+
+\par\medskip
+
+\noindent\textbf{Parthasarathy et al. (2025)}\nocite{Parthasarathy2025VAETransformer} --- \emph{Fraud Detection with Variational Autoencoders and Transformer Networks: A Robust Deep Learning Approach for Banking Transactions}. The authors present a hybrid deep learning framework combining Variational Autoencoders (VAE) and Transformer networks for fraud detection in digital banking transactions. The authors argue that traditional rule-based and conventional machine learning approaches are increasingly ineffective against sophisticated fraud due to their inability to process complex transaction patterns. Their framework first employs a VAE to learn the distribution of legitimate transactions and detect anomalies through reconstruction errors. These suspicious transactions are then classified by a Transformer network using self-attention mechanisms to capture complex feature relationships. The model was evaluated using the PaySim financial transaction dataset and achieved 99.48 percent accuracy, 99.39 percent precision, 99.55 percent recall, and a false-positive rate of only 0.599 percent, outperforming conventional classifiers. The study highlights the advantages of combining unsupervised anomaly detection with supervised classification for identifying both known and emerging fraud patterns. It also reviews complementary technologies such as cryptography, clustering, reinforcement learning, and deep neural networks. However, the paper provides limited discussion on computational cost, explainability, training requirements, and deployment challenges, which are important for implementing such models in large-scale commercial banking systems.
+
+\par\medskip
+
+\noindent\textbf{Oduro et al. (2025)}\nocite{Oduro2025AIFraudDetection} --- \emph{AI-Powered Fraud Detection in Digital Banking: Enhancing Security through Machine Learning}. The authors provide a comprehensive review of Artificial Intelligence (AI) and Machine Learning (ML) applications in digital banking fraud detection. Unlike studies proposing a single detection model, this research systematically examines existing AI-based approaches, their effectiveness, implementation challenges, and future research directions. Using peer-reviewed studies from major academic databases published since 2010, the authors analyze supervised learning, unsupervised learning, deep learning, anomaly detection, and Natural Language Processing (NLP) techniques. The review explains how anomaly detection identifies deviations from normal customer behavior, enabling proactive fraud prevention. It also discusses decision trees, neural networks, CNNs, RNNs, and NLP for detecting suspicious transactions and customer interactions. The study highlights several implementation challenges, including algorithmic bias, privacy concerns, adversarial attacks, and limited model interpretability. To address these issues, the authors recommend integrating Explainable AI (XAI), privacy-preserving machine learning, blockchain technology, and real-time monitoring frameworks. Although the paper does not experimentally validate a specific fraud detection model, it successfully synthesizes current developments and identifies research gaps, making it a valuable reference for AI-driven fraud detection in modern banking systems.
+
+\par\medskip
+
+\noindent\textbf{Salami et al. (2025)}\nocite{Salami2025BehaviouralBiometrics} --- \emph{AI-Powered Behavioural Biometrics for Fraud Detection in Digital Banking: A Next-Generation Approach to Financial Cybersecurity}. The authors propose an AI-driven behavioural biometrics framework for fraud detection in digital banking by focusing on continuous user authentication rather than traditional transaction-based monitoring. The study argues that passwords, PINs, OTPs, and even conventional biometric methods are increasingly vulnerable to cyberattacks, making behavioural biometrics a more secure alternative. The proposed system continuously analyzes behavioural characteristics such as keystroke dynamics, typing rhythm, mouse movements, touchscreen gestures, gait, device handling, and voice patterns to verify user identity. AI and machine learning models compare real-time behaviour with established user profiles to detect suspicious deviations. Using datasets including PaySim, Credit Card Fraud Detection, and HMOG, the authors evaluated Random Forest, CNN, and LSTM models, with LSTM achieving the highest performance of 97.9 percent accuracy, 95.6 percent precision, and 93.4 percent recall. The study highlights the effectiveness of behavioural biometrics against account takeovers, credential theft, and social engineering attacks while discussing successful real-world implementations. It also addresses ethical concerns such as privacy, transparency, algorithmic fairness, and regulatory compliance, emphasizing responsible AI governance for future deployment.
+
+\par\medskip
+
+\noindent\textbf{Dichev, Zarkova, and Angelov (2025)}\nocite{Dichev2025MLFraudRisk} --- \emph{Machine Learning as a Tool for Assessment and Management of Fraud Risk in Banking Transactions}. The authors investigate machine learning as a comprehensive tool for fraud risk assessment and management in banking transactions. Rather than focusing solely on fraud classification, the study evaluates how machine learning enhances decision-making, risk assessment, and banking resilience. Using a synthetic dataset of approximately 1.5 million transaction records provided by J.P. Morgan, the researchers compared Classification and Regression Trees (CART), Gradient Boosting (GB), and Extreme Gradient Boosting (XGBoost) with Logistic Regression. The results showed that ensemble learning techniques, particularly Gradient Boosting and XGBoost, significantly outperformed the traditional statistical model by effectively identifying complex nonlinear fraud patterns within highly imbalanced datasets. The authors emphasize that machine learning enables automated anomaly detection, personalized risk assessment, scalability, and continuous learning from historical transaction data. However, they also note challenges including computational requirements, dependence on high-quality training data, and limited interpretability of advanced ensemble models. The study concludes that balancing predictive accuracy with explainability is essential for ensuring regulatory compliance while improving fraud prevention and operational efficiency in modern banking environments.
+
+\par\medskip
+
+\noindent\textbf{Metha (2025)}\nocite{Metha2025RiskScoring} --- \emph{AI-Driven Fraud Detection: A Risk Scoring Model for Enhanced Security in Banking}. The study proposes an Artificial Intelligence (AI)-driven risk scoring framework to strengthen fraud detection and enhance security in digital banking. The study highlights the growing threat of fraudulent activities resulting from the rapid adoption of online and mobile banking, arguing that traditional rule-based systems are ineffective due to their inability to adapt to evolving fraud patterns and their high false-positive rates. The proposed framework assigns each customer account a fraud risk score ranging from 0 to 100 based on four key behavioural indicators: new device logins, changes to registered contact information, addition of new beneficiaries or payment contacts, and high-value transactions exceeding USD 1,000 within a 48-hour period. Accounts exceeding a predefined threshold are automatically locked pending additional verification. The framework integrates supervised, unsupervised, and hybrid machine learning techniques to detect both known and unknown fraud patterns while supporting real-time behavioural analysis. The study also discusses ethical concerns such as privacy, transparency, and regulatory compliance, recommending stronger AI governance and data management. Although largely conceptual without extensive experimental validation, the research presents a practical and interpretable fraud prevention model that can be integrated into existing banking systems.
+
+\par\medskip
+
+\noindent\textbf{Biru (2025)}\nocite{Biru2025MiddleOffice} --- \emph{Transforming Investment Banking Middle Office: A Framework for Advanced Security and Data Management}. The study presents an AI-driven framework for modernizing investment banking middle-office operations through intelligent automation, advanced data management, and cloud-based technologies. Unlike conventional fraud detection research, this study focuses on operational challenges such as fragmented information systems, inefficient reconciliation, regulatory compliance, and data inconsistency. The proposed framework integrates deep learning, Natural Language Processing (NLP), predictive analytics, intelligent ETL pipelines, and microservices-based cloud architecture to automate trade processing, improve real-time reconciliation, and enhance regulatory reporting. By replacing monolithic systems with modular microservices communicating through secure APIs, the framework improves scalability, fault tolerance, and system maintainability. The study also discusses challenges including legacy system integration, data quality, interoperability, and real-time processing. AI-powered predictive reconciliation, anomaly detection, and automated validation help reduce operational risks and improve data consistency. While the framework provides a comprehensive strategy for digital transformation and operational resilience, it remains largely conceptual with limited experimental validation. The paper concludes that integrating AI with cloud-native architectures can significantly enhance banking security, operational efficiency, transparency, and compliance while preparing investment banks for future technological developments.
+
+\par\medskip
+
+\noindent\textbf{Ikhsan et al. (2025)}\nocite{Singh2025} --- \emph{Factors Influencing Continued Adoption of AI in Indonesia's Banking Sector Using an Extended Technology Acceptance Model (TAM)}. This study investigates the factors influencing customers' continued use of AI-enabled banking services in Indonesia by extending the Technology Acceptance Model (TAM). Recognizing that research on sustained AI adoption in developing countries remains limited, the authors incorporate four additional constructs—awareness of artificial intelligence, subjective norms, perceived risk, and perceived trust—alongside traditional TAM variables to better explain customer behaviour. Data were collected from 388 bank customers who had prior experience using AI-based banking services, ensuring respondents possessed practical knowledge of the technology. Analysis supported all nineteen proposed hypotheses, demonstrating that awareness of AI positively influences customer perceptions and acceptance. Subjective norms also significantly affect behavioural intentions, highlighting the influence of family, peers, and society. Furthermore, perceived trust emerged as a critical determinant of continued AI usage, while perceived risk emphasized the importance of addressing privacy, security, and reliability concerns. The study concludes that customer awareness, trust, social influence, and effective risk management collectively shape long-term AI adoption. It recommends that banks strengthen security measures, improve transparency, and invest in customer education to enhance confidence and encourage sustained use of AI-driven banking services.
+
+\par\medskip
+
+\noindent\textbf{Byambaa et al. (2025)}\nocite{Ikhsan2025} --- \emph{Consumer Intention to Adopt AI-Enabled Banking Services in Mongolia Using the Technology Acceptance Model (TAM)}. This study examines the factors influencing consumer intention to adopt AI-enabled banking services in Mongolia using the Technology Acceptance Model (TAM). As research on AI adoption within the Mongolian banking sector is limited, the authors investigate how customer perceptions affect acceptance of AI technologies. Data were collected through a structured survey involving customers of selected Mongolian banks, yielding 487 valid responses from 508 participants. The proposed research model was analysed using Partial Least Squares Structural Equation Modeling (PLS-SEM) to evaluate relationships among the variables. The findings reveal that Mongolian banks have already implemented several AI-powered banking solutions, demonstrating the growing importance of AI in financial services. Perceived usefulness and perceived trust emerged as the strongest determinants of customers' intention to adopt AI-enabled banking, while attitude towards AI significantly influenced behavioural intention. The study further found that attitude partially mediates the relationship between perceived ease of use, perceived usefulness, and behavioural intention. These findings suggest that banks should focus on improving the usefulness, reliability, and trustworthiness of AI applications while promoting positive customer attitudes through awareness initiatives and user-friendly services to encourage wider adoption.
+
+\par\medskip
+
+\noindent\textbf{Schrank (2025)}\nocite{Manta2025} --- \emph{Behavioral Intention to Use AI-Powered Mobile Banking in the Post-COVID-19 Era: An Extended UTAUT Framework}. This study investigates the determinants of customers' behavioural intention to use AI-powered mobile banking by extending the Unified Theory of Acceptance and Use of Technology (UTAUT) with two AI-specific constructs: perceived intelligence and perceived anthropomorphism. Conducted among 412 mobile banking users in Thailand, the research employed Structural Equation Modeling (SEM) to examine the influence of performance expectancy, effort expectancy, social influence, facilitating conditions, trust, perceived privacy, perceived security, price value, habit, perceived intelligence, and anthropomorphism on behavioural intention. The findings indicate that performance expectancy, effort expectancy, social influence, facilitating conditions, trust, perceived privacy, perceived intelligence, and anthropomorphism significantly and positively influence customers' intention to adopt AI-enabled mobile banking services. In contrast, perceived security, price value, and habit did not significantly affect behavioural intention. Notably, perceived intelligence and anthropomorphism emerged as important AI-related factors, suggesting that customers value intelligent, adaptive, and human-like interactions within banking applications. The study extends the UTAUT framework by demonstrating the importance of AI characteristics in technology adoption and recommends that financial institutions develop personalized, trustworthy, and interactive AI systems to improve customer engagement and encourage wider adoption of AI-powered mobile banking services.
+
+\par\medskip
+
+\noindent\textbf{Islam et al. (2025)}\nocite{Islam2025} --- \emph{AI and FinTech for Banking Transformation and Sustainable Finance}. This study examines how Artificial Intelligence (AI) and Financial Technology (FinTech) are transforming the banking industry by improving operational efficiency, payment systems, fraud detection, customer experience, and sustainable financial practices. Using an interdisciplinary approach that combines qualitative and quantitative methods, the researchers employ document analysis, case studies, statistical evaluation, and expert insights to assess the impact of AI-driven technologies. The study also proposes hypotheses linking AI, blockchain, digitalization, and innovative financial instruments with enhanced banking performance, fraud prevention, risk assessment, and sustainable investment outcomes. The findings indicate that AI-powered payment systems significantly improve predictive analytics, fraud detection, and risk management while enabling more personalized banking services. Blockchain technology enhances transaction transparency, reduces corruption and fraud, and strengthens trust in financial systems. Additionally, generative AI improves workforce productivity by automating complex banking operations and supporting decision-making, while blockchain, tokenization, and smart contracts expand access to finance, particularly for small and medium-sized enterprises. The study concludes that integrating AI with secure digital infrastructures is essential for promoting sustainable finance, strengthening customer trust, improving operational efficiency, and accelerating the digital transformation of the banking sector.
+
+\par\medskip
+
+\noindent\textbf{Ikhsan et al. (2025)}\nocite{Mongolia2025} --- \emph{Continued Adoption of AI in Indonesia's Banking Industry Using an Extended Technology Acceptance Model}. This study explores the factors influencing customers' continued adoption of AI-enabled banking services in Indonesia by extending the Technology Acceptance Model (TAM). To provide a more comprehensive understanding of AI adoption, the researchers incorporated four additional constructs: awareness of artificial intelligence, subjective norms, perceived risk, and perceived trust. Nineteen hypotheses were developed and tested using survey responses from 388 bank customers who had previous experience with AI-powered banking technologies. The results supported all proposed hypotheses, confirming the effectiveness of the extended TAM framework in explaining customer behaviour. Awareness of AI positively influenced customer perceptions and acceptance, while subjective norms demonstrated the significant role of social influence in encouraging AI adoption. Perceived trust emerged as a major factor promoting customers' willingness to continue using AI-enabled banking services, whereas perceived risk emphasized the importance of privacy, security, and system reliability. The study concludes that banks should enhance customer awareness, strengthen trust through transparent AI systems, and implement robust security measures to encourage long-term AI adoption. These findings contribute to the literature by providing a broader understanding of AI acceptance in developing economies and supporting future digital banking initiatives.
+
+\par\medskip
+
+\noindent\textbf{Singh et al. (2025)}\nocite{IGI2025} --- \emph{Artificial Intelligence in Banking and Finance: A Systematic Literature Review}. This study presents a systematic literature review examining the development and applications of Artificial Intelligence (AI) in the banking and financial sector. Recognizing that previous research has mainly focused on specific AI techniques, the authors analyse 157 published studies to provide a comprehensive understanding of AI adoption across banking and finance. Through thematic analysis, the research categorizes AI applications, implementation challenges, and emerging research trends while identifying important knowledge gaps. The findings show that AI has significantly improved customer service through intelligent automation, virtual assistants, and personalized financial solutions. The review also highlights AI's contribution to financial inclusion, customer readiness for AI adoption, and the growing importance of regulatory frameworks governing AI implementation. Despite these benefits, the study identifies several barriers, including concerns related to data privacy, cybersecurity, ethical issues, regulatory compliance, and the complexity of AI technologies. The authors emphasize the need for Explainable Artificial Intelligence (XAI) to improve transparency, accountability, and customer trust in automated decision-making. The study concludes by proposing a conceptual research framework and a future research agenda based on the Theory, Context, and Methodology (TCM) framework to guide future investigations into AI adoption within the banking industry.
+
+\par\medskip
+
+\noindent\textbf{Authors to verify (2025)}\nocite{AMLAS2025} --- \emph{Artificial Intelligence for Cyberbanking Fraud Detection}. This study examines the growing challenge of cyberbanking fraud resulting from the rapid expansion of digital financial services and increasingly sophisticated cyberattacks. It argues that traditional fraud detection approaches, including rule-based systems and manual analysis, are no longer sufficient to detect complex and evolving fraud strategies. To address these limitations, the study emphasizes the integration of Artificial Intelligence (AI) and Machine Learning (ML) into modern cyberbanking fraud prevention systems. AI-driven models can analyse large volumes of transactional and behavioural data in real time, allowing financial institutions to identify suspicious activities with greater speed and accuracy. Deep learning algorithms are particularly highlighted for their ability to learn hidden transaction patterns, adapt to new fraud techniques, and continuously improve detection performance using historical data. The findings indicate that AI-powered fraud detection significantly reduces false positives, enhances operational efficiency, and enables proactive responses to cyber threats through predictive analytics and real-time monitoring. The study concludes that financial institutions should continuously invest in advanced AI technologies and update fraud detection models regularly to strengthen cybersecurity, protect customer data, improve transaction security, and maintain customer trust in digital banking services.
+
+\par\medskip
+
+\noindent\textbf{Arugula and Karimilla (2025)}\nocite{AMLAS2025} --- \emph{Modernizing Legacy Banking Systems Using AI and Microservices Architecture}. This study investigates how financial institutions can modernize legacy banking systems by integrating Artificial Intelligence (AI) with microservices architecture to create scalable, intelligent, and customer-centric banking ecosystems. The proposed hybrid modernization strategy combines containerized microservices with existing legacy systems, allowing banks to gradually transition without disrupting ongoing operations. AI technologies are incorporated to automate routine processes, strengthen fraud detection, enhance predictive analytics, and deliver personalized customer services. Supporting technologies such as event-driven communication, API gateways, and AI governance frameworks enable secure, ethical, and real-time system integration while ensuring regulatory compliance. The findings indicate that microservices improve scalability, flexibility, and continuous software delivery, whereas AI enhances operational efficiency through intelligent decision-making, workflow automation, and proactive risk management. However, the study also identifies challenges including data silos, integration complexity, regulatory requirements, and organizational resistance to change. It concludes that successful digital transformation requires technological innovation alongside effective leadership, workforce reskilling, and a customer-focused organizational culture. Overall, the integration of AI and microservices provides a comprehensive approach to improving operational resilience, accelerating innovation, enhancing customer experience, and ensuring long-term competitiveness in the evolving banking and FinTech landscape.
+
+\par\medskip
+
+\noindent\textbf{Moharrak and Mogaji (2024)}\nocite{Moharrak2024GenerativeAI} The authors empirically examine the integration of Generative AI in banking, addressing gaps in practical implementation research. Through interviews with 36 banking managers, the study identifies five critical factors: Recognition, Requirement, Reliability, Regulatory compliance, and Responsiveness. The findings highlight GenAI’s potential to improve banking services while emphasizing challenges involving data quality, privacy, accuracy, explainability, accountability, and regulation. The study therefore supports responsible, well-governed GenAI adoption in financial institutions.
+
+\par\medskip
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Methodology}
+
+
+The data engineering workflow prepares heterogeneous banking files for storage in the relational database. Extraction preserves the original sources, transformation standardizes fields, and validation checks records before loading them into PostgreSQL. These stages provide traceable inputs for subsequent model inference, API operations, and dashboard views.
+
+\begin{figure*}[!p]
+    \centering
+    \includegraphics[width=\textwidth,height=0.86\textheight,keepaspectratio]{IMG-20260818-WA0002.jpg}
+    \caption{System Architecture}
+    \label{fig:system_architecture}
+\end{figure*}
+
+\begin{algorithm}[H]
+\caption{FinIntel AI Banking Intelligence Workflow}
+\label{alg:finintel}
+\begin{algorithmic}[1]
+
+\Require Banking datasets $D$, user request $R$
+\Ensure Validated data, predictions, explanations
+
+\State Authenticate user using JWT
+\State Verify role-based access permissions
+
+\ForAll{dataset $d \in D$}
+    \State Extract records from local files or S3
+    \State Clean and standardize extracted data
+    \State Transform fields into database schema
+    \State Validate records and relationships
+
+    \If{validation fails}
+        \State Log errors and reject invalid records
+    \Else
+        \State Load valid records into PostgreSQL
+    \EndIf
+\EndFor
+
+\State Receive request $R$ through FastAPI
+
+\If{$R$ requires a prediction}
+    \State Identify the required ML model
+    \State Retrieve and preprocess input features
+    \State Generate prediction using ML model
+    \State Compute SHAP and LIME explanations
+    \State Store prediction and explanation history
+\Else
+    \State Retrieve authorized banking information
+\EndIf
+
+\State Return results through REST API
+\State Display outputs in React dashboard
+
+\end{algorithmic}
+\end{algorithm}
+
+% Keep the large architecture figure within the Methodology introduction.
+\FloatBarrier
+
+\subsection{ETL Architecture}
+
+The ETL process is organized as a sequence of observable stages, each with a defined output. Source files are retained separately from transformed data so that cleaning decisions can be checked or repeated. This separation also helps identify whether a problem arose during extraction, conversion, validation, or database loading.
+
+\begin{center}
+\textbf{Raw Dataset}
+$\downarrow$
+
+\textbf{Extract}
+$\downarrow$
+
+\textbf{Cleaning}
+$\downarrow$
+
+\textbf{Transformation}
+$\downarrow$
+
+\textbf{Validation}
+$\downarrow$
+
+\textbf{Processed Dataset}
+$\downarrow$
+
+\textbf{PostgreSQL}
+$\downarrow$
+
+\textbf{FastAPI}
+$\downarrow$
+
+\textbf{React Dashboard}
+\end{center}
+
+The sequence separates source acquisition from quality control and persistence. This staged view is useful when tracing a rejected batch because the recorded outcome can be associated with the operation that produced it.
+
+\begin{figure}[!tbp]
+    \centering
+    \includegraphics[width=0.96\columnwidth,height=0.30\textheight,keepaspectratio]{image.png}
+    \caption{ETL module structure of the FinIntel AI platform.}
+    \label{fig:etl_modules}
+\end{figure}
+
+The module view complements the stage sequence by locating the ETL responsibilities within the platform. The following extraction evidence focuses on execution and on the records produced at the source boundary.
+
+\subsection{Extraction Phase}
+
+Extraction brings source records into the processing environment without overwriting the original files. Configurable routines handle banking datasets such as customers, accounts, transactions, lending, fraud, campaigns, and support tickets. Checks for file availability, text encoding, delimiters, and record counts make it possible to diagnose ingestion problems before transformation begins.
+
+The extraction process includes:
+
+\begin{itemize}
+    \item Reading CSV datasets while preserving original values.
+    \item Dedicated parsing for the German Credit dataset.
+    \item Automatic delimiter detection (comma, semicolon, and tab).
+    \item Explicit handling of UTF-8, UTF-8 BOM, and Latin-1 encodings.
+    \item Verification of file existence before execution.
+    \item Comprehensive logging of extracted row counts, encoding information, and anomalies.
+\end{itemize}
+
+\begin{figure}[!tbp]
+    \centering
+    \includegraphics[width=0.96\columnwidth,height=0.30\textheight,keepaspectratio]{image1.png}
+    \caption{Successful execution of the PySpark ETL engine.}
+    \label{fig:etl_execution}
+\end{figure}
+
+Execution logs provide evidence that the extraction routine completed, while a record preview allows the resulting field structure to be inspected before subsequent transformations.
+
+\begin{figure}[!tbp]
+    \centering
+    \includegraphics[width=0.96\columnwidth,height=0.30\textheight,keepaspectratio]{image2.png}
+    \caption{Preview of the customer dataset after extraction. }
+    \label{fig:customer_extraction}
+\end{figure}
+
+The extracted records form the input to the transformation and validation stages described next; a preview alone does not establish that the records satisfy the target schema or business rules.
+
+\FloatBarrier
+\subsection{Transformation Phase}
+
+Transformation aligns the imported fields with the database's expected representation. This includes standardizing identifiers, dates, contact details, financial amounts, and categorical values while preparing relationships between datasets.
+
+The transformation stage performs the following operations:
+
+\begin{itemize}
+    \item Removal of duplicate records using natural keys.
+    \item Handling missing values based on field criticality.
+    \item Standardization of date and timestamp formats.
+    \item Currency normalization.
+    \item Phone number standardization.
+    \item Email normalization and validation.
+    \item Generation and assignment of foreign keys.
+    \item Creation of surrogate identifiers where necessary.
+    \item Feature engineering for derived attributes such as age, debt ratio, and credit utilization.
+    \item Enforcement of domain-specific business rules.
+\end{itemize}
+
+Representative cleaning rules remove repeated customer entries, flag malformed contact information, handle missing values, harmonize city and loan-status labels, and exclude transactions that violate the configured checks.
+
+\subsection{Column Mapping}
+
+Before loading, each source column is associated with its destination field in the relational schema. Representative mappings are listed below.
+
+\begin{itemize}
+    \item \texttt{customer\_name} $\rightarrow$ \texttt{name}
+    \item \texttt{mail} $\rightarrow$ \texttt{email}
+    \item \texttt{phone} $\rightarrow$ \texttt{phone\_number}
+    \item \texttt{cust\_id} $\rightarrow$ \texttt{customer\_id}
+    \item \texttt{txn\_amount} $\rightarrow$ \texttt{amount}
+    \item \texttt{fraud\_score} $\rightarrow$ \texttt{fraud\_probability}
+\end{itemize}
+
+Equivalent mapping rules are defined for the remaining input datasets so that downstream queries use a consistent field vocabulary.
+
+\subsection{Data Validation}
+
+Validation checks that transformed records meet the conditions required for relational loading. The rules cover references to existing entities, allowable numeric ranges, and the expected form of contact details, including the following examples:
+
+\begin{itemize}
+    \item Existence of referenced customer IDs.
+    \item Existence of referenced branch IDs.
+    \item Non-negative account balances.
+    \item Positive loan amounts.
+    \item Credit scores within the range of 300--900.
+    \item Fraud probability values between 0 and 1.
+    \item Valid email and phone number formats.
+\end{itemize}
+
+Records that fail these checks are written to diagnostic logs and excluded from the accepted database load.
+
+\subsection{Loading Strategy}
+
+Dataset loading follows the parent--child relationships in the PostgreSQL schema. Tables containing referenced entities are populated before tables whose rows depend on them.
+
+The loading sequence is:
+
+\begin{enumerate}
+    \item Roles
+    \item Branches
+    \item Employees
+    \item Users
+    \item Customers
+    \item Banking Products
+    \item Accounts
+    \item Transactions
+    \item Loan Applications
+    \item Credit History
+    \item Fraud Transactions
+    \item Support Tickets
+    \item Marketing Campaigns
+    \item Prediction History
+    \item Branch Performance
+\end{enumerate}
+
+This sequence is intended to prevent inserts from referencing parent records that have not yet been loaded.
+
+\subsection{Error Handling}
+
+The pipeline distinguishes source problems, validation failures, and database errors so that unsuccessful stages can be reported explicitly. The main cases addressed are:
+
+\begin{itemize}
+    \item Missing source files.
+    \item Corrupted CSV files.
+    \item Duplicate records.
+    \item Foreign key violations.
+    \item Database connection failures.
+    \item Transaction rollback during loading failures.
+\end{itemize}
+
+Diagnostic entries identify the dataset and relevant record or batch, the failed check, and the time of execution.
+
+\begin{algorithm}[!t]
+\caption{Dataset ETL with Explicit Failure Status}
+\label{alg:etl-status}
+\begin{algorithmic}[1]
+\Require Dataset configuration $c$, source locations $S$, staging target $T$
+\Ensure Stage status and accepted/rejected record counts
+\State Initialize status as \texttt{PENDING}; initialize error record list
+\If{source file is absent or format is unsupported}
+    \State Record the dataset, failed check, and diagnostic message
+    \State Set status to \texttt{FAILED}; report status and terminate
+\EndIf
+\State Extract records from $S$ with Spark
+\If{extraction fails}
+    \State Record extraction failure; set status to \texttt{FAILED}; report and terminate
+\EndIf
+\State Apply dataset-specific transformations
+\State Validate records and compute input, accepted, and rejected row counts
+\If{validation or row-count check fails}
+    \State Record validation failure; set status to \texttt{FAILED}; report and terminate
+\EndIf
+\State Load accepted records into $T$ using JDBC
+\If{database load fails}
+    \State Record load failure; set status to \texttt{FAILED}; report and terminate
+\EndIf
+\State Set status to \texttt{SUCCEEDED} and report all row counts
+\end{algorithmic}
+\end{algorithm}
+
+Algorithm~\ref{alg:etl-status} makes success conditional on completion of every required stage. Its failure branches retain an explicit diagnostic outcome so a failed operation cannot be summarized as a successful load.
+
+\subsection{Logging Strategy}
+
+Processing events are categorized by severity to separate routine milestones from conditions requiring intervention:
+
+\begin{itemize}
+    \item \textbf{INFO}: Successful execution of ETL operations.
+    \item \textbf{WARNING}: Non-critical anomalies.
+    \item \textbf{ERROR}: Record-level or batch-level failures.
+    \item \textbf{CRITICAL}: Pipeline-level failures.
+\end{itemize}
+
+Log files follow the naming convention:
+
+\begin{center}
+\texttt{etl\_<stage>\_<dataset>\_<YYYYMMDD\_HHMMSS>.log}
+\end{center}
+
+to facilitate traceability and auditing.
+
+\subsection{Data Quality Assessment}
+
+A final dataset-level review supplements individual record checks. It examines completeness, duplicates, data types, foreign-key consistency, and conformance to business rules.
+
+\begin{itemize}
+    \item Duplicate detection.
+    \item Missing value profiling.
+    \item Data type verification.
+    \item Referential integrity checking.
+    \item Business rule validation.
+\end{itemize}
+
+Only data that passes the configured acceptance checks is eligible for insertion into the target PostgreSQL tables.
+
+\subsection{Processed Dataset Organization}
+
+Keeping prepared datasets apart from their raw counterparts preserves an audit trail of the transformation process. It also makes it possible to revise cleaning or mapping logic and regenerate outputs from unchanged source data.
+
+\subsection{Overall System Workflow}
+
+Raw Datasets
+$\downarrow$
+Local PySpark ETL
+$\downarrow$
+PostgreSQL
+$\downarrow$
+Machine Learning
+$\downarrow$
+FastAPI
+$\downarrow$
+React Dashboard
+$\downarrow$
+AWS Migration
+$\downarrow$
+Amazon S3
+$\downarrow$
+AWS Glue
+$\downarrow$
+Amazon RDS
+
+The proposed data engineering framework:
+
+\subsection{Implementation Strategy}
+
+The proposed ETL framework follows a phased implementation strategy...
+
+\begin{center}
+\textbf{Development Environment}
+
+$\downarrow$
+
+\textbf{Local PySpark ETL}
+
+$\downarrow$
+
+\textbf{PostgreSQL}
+
+$\downarrow$
+
+\textbf{Testing and Validation}
+
+$\downarrow$
+
+\textbf{Amazon S3}
+
+$\downarrow$
+
+\textbf{AWS Glue}
+
+$\downarrow$
+
+\textbf{Amazon RDS}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results and Discussion}
+
+This section describes the prototype components and the checks used to examine their integration. The discussion concentrates on the relational database, independent services, prediction workflow, dashboard, and cloud ETL design, rather than on an unreported production-scale benchmark.
+
+The reported implementation brings together React, FastAPI, PostgreSQL, Docker, and AWS-oriented components. Through RESTful endpoints, the architecture organizes customer, account, loan, fraud, credit-risk, branch, and reporting functions into separate modules.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Experimental Environment}
+
+Table~\ref{tab:environment} records the software environment and tools used for the prototype.
+
+\begin{table}[H]
+
+\centering
+
+\caption{Experimental Environment}
+
+\label{tab:environment}
+
+\begin{tabular}{ll}
+
+\toprule
+
+Component & Specification \\
+
+\midrule
+
+Operating System & Ubuntu 22.04 LTS \\
+
+Frontend & React + Vite \\
+
+Backend & FastAPI \\
+
+Programming Language & Python 3.11 \\
+
+Database & PostgreSQL 16 \\
+
+ORM & SQLAlchemy \\
+
+Authentication & JWT \\
+
+Machine Learning & Scikit-learn, XGBoost, LightGBM \\
+
+Explainability & SHAP, LIME \\
+
+Cloud Storage & Amazon S3 \\
+
+ETL & AWS Glue \\
+
+Event Processing & AWS Lambda \\
+
+Cloud Database & Amazon RDS PostgreSQL \\
+
+Deployment & Docker + Docker Compose \\
+
+API Gateway & Nginx \\
+
+Visualization & Recharts \\
+
+\bottomrule
+
+\end{tabular}
+
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Database Implementation}
+
+PostgreSQL provides the implemented relational data store. Its schema comprises fifteen entities connected using primary keys and foreign-key constraints.
+
+The tables cover customer and account records, financial transactions, lending, fraud events, branch operations, support interactions, campaigns, predictions, access management, products, and employees.
+
+\begin{figure}[!tbp]
+    \centering
+    \includegraphics[width=0.96\columnwidth,height=0.30\textheight,keepaspectratio]{8732.jpg}
+    \caption{PostgreSQL database (FinIntel ai) successfully created.}
+    \label{fig:database_created}
+\end{figure}
+
+The database creation view records the initial setup milestone. The next figure presents the organization of the relations that support the platform's banking domains.
+
+\begin{figure}[!tbp]
+    \centering
+    \includegraphics[width=0.96\columnwidth,height=0.30\textheight,keepaspectratio]{8734.jpg}
+    \caption{Enterprise banking database schema showing all 15 relational tables.}
+    \label{fig:schema}
+\end{figure}
+
+The schema overview summarizes the database structure, while the execution view below documents the schema initialization step.
+
+\begin{figure}[!tbp]
+    \centering
+    \includegraphics[width=0.96\columnwidth,height=0.30\textheight,keepaspectratio]{8740.jpg}
+    \caption{Successful execution of the PostgreSQL schema script.}
+    \label{fig:schema_execution}
+\end{figure}
+
+After schema creation, table-level inspection helps verify that individual relations expose the expected structure. The following figure focuses on the customer relation.
+
+\begin{figure}[!tbp]
+    \centering
+    \includegraphics[width=0.96\columnwidth,height=0.30\textheight,keepaspectratio]{8738.jpg}
+    \caption{Structure of the customers table after schema creation}
+    \label{fig:customers_table}
+\end{figure}
+
+The normalized schema limits repeated attributes and defines explicit relationships between related records. Database constraints and indexes provide mechanisms for preserving integrity and supporting retrieval across modules.
+
+Figure~\ref{fig:schema} illustrates the implemented PostgreSQL schema.
+
+\begin{figure*}[!p]
+    \centering
+    \includegraphics[width=\textwidth,height=0.86\textheight,keepaspectratio]{er_diagram.png}
+    \caption{Entity Relationship Diagram (ERD) of the FinIntel AI banking database.}
+    \label{fig:er_diagram}
+\end{figure*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\FloatBarrier
+\subsection{Microservices Deployment}
+
+Business functions are organized as separate Docker-deployed services. The modules represented in the implementation are:
+
+The implemented services include:
+
+\begin{itemize}
+
+\item Authentication Service
+
+\item Customer Service
+
+\item Account Service
+
+\item Loan Service
+
+\item Fraud Detection Service
+
+\item Credit Risk Service
+
+\item Analytics Service
+
+\item Machine Learning Service
+
+\end{itemize}
+
+Packaging these modules separately allows service-specific changes and simplifies testing of their interfaces. Availability and scaling advantages would still depend on the orchestration and deployment environment.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Machine Learning Implementation}
+
+The machine learning service covers three supervised prediction tasks:
+
+These include:
+
+\begin{enumerate}
+
+\item Loan Approval Prediction
+
+\item Fraud Detection
+
+\item Credit Risk Prediction
+
+\end{enumerate}
+
+The inference workflow is divided into the following steps:
+
+\begin{enumerate}
+
+\item Feature Extraction
+
+\item Data Preprocessing
+
+\item Model Inference
+
+\item Confidence Estimation
+
+\item SHAP Explanation
+
+\item LIME Explanation
+
+\item Prediction Storage
+
+\item API Response
+
+\end{enumerate}
+
+The separation between inference and business APIs is intended to make model updates possible without redesigning the entire application.
+
+The training and inference stages can be expressed as a single reproducible pipeline: preprocessing parameters are learned from training data and then reused when transforming held-out or incoming records.
+
+\begin{algorithm}[!t]
+\caption{Supervised Model Training and Inference}
+\label{alg:model-pipeline}
+\begin{algorithmic}[1]
+\Require Labelled dataset $D$, target column $y$, feature columns $X$, new input $x$
+\Ensure Evaluated model pipeline and prediction for $x$
+\State Verify that $y$ and all columns in $X$ exist in $D$
+\State Split $D$ into training and held-out test sets
+\State Fit preprocessing transformations using the training features only
+\State Transform training and test features using the fitted transformations
+\State Fit a baseline classifier using transformed training features and labels
+\State Evaluate the fitted pipeline on the held-out test set
+\State Save the fitted preprocessing and classifier as one pipeline artifact
+\State Load the saved pipeline for inference
+\State Validate $x$ against the expected feature schema
+\State Predict using the loaded pipeline and return the output
+\end{algorithmic}
+\end{algorithm}
+
+Algorithm~\ref{alg:model-pipeline} distinguishes fitting from inference and keeps preprocessing inside the saved artifact. Evaluation remains based on held-out data, while new inputs pass through the same learned transformations as the training features.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Dashboard Evaluation}
+
+The React dashboard combines information returned by different backend modules into a single interface for authorized users.
+
+The dashboard is structured around the following operational and analytical views:
+
+\begin{itemize}
+
+\item Customer Statistics
+
+\item Loan Approval Trends
+
+\item Fraud Alerts
+
+\item Revenue Reports
+
+\item Branch Performance
+
+\item Credit Risk Distribution
+
+\item Customer Growth
+
+\item Monthly Transactions
+
+\item Prediction History
+
+\end{itemize}
+
+Charts present trends and indicators in a form intended to support routine review by banking staff.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Explainable Artificial Intelligence Evaluation}
+
+Interpretability is included as part of the prediction workflow rather than treated as a separate reporting activity.
+
+In addition to a predicted outcome, the design provides SHAP- and LIME-based explanations so the inputs associated with that outcome can be examined.
+
+The explanation interface is designed to expose:
+
+\begin{itemize}
+
+\item Most influential features
+
+\item Positive feature contributions
+
+\item Negative feature contributions
+
+\item Overall prediction confidence
+
+\item Local explanation
+
+\end{itemize}
+
+These outputs provide useful context for model review, although they do not by themselves establish fairness, correctness, or regulatory compliance.
+
+The model evaluation figures below provide complementary views of classification behaviour. They should be interpreted with the dataset, class balance, and decision threshold in mind; no single plot establishes suitability for operational credit or fraud decisions.
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\columnwidth]{backend/ml/results/confusion_matrix.png}
+    \caption{Confusion matrix produced by the model evaluation workflow.}
+    \label{fig:confusion-matrix}
+\end{figure}
+
+The confusion matrix shows the distribution of predicted and observed classes for the evaluation output. Its interpretation depends on the class definitions and evaluation split used to produce the plotted result.
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\columnwidth]{backend/ml/results/roc_curves.png}
+    \caption{ROC curves produced by the model evaluation workflow.}
+    \label{fig:roc-curves}
+\end{figure}
+
+The ROC view summarizes the trade-off between true-positive and false-positive rates across thresholds. It complements threshold-specific measures and should be read alongside the underlying test-set protocol.
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\columnwidth]{backend/ml/results/model_comparison.png}
+    \caption{Comparison of candidate models in the evaluation workflow.}
+    \label{fig:model-comparison}
+\end{figure}
+
+The comparison plot provides a compact view of the model metrics available in the project artifacts. Numerical conclusions should be drawn from the associated evaluation data and documented methodology rather than inferred from visual scale alone.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Cloud Infrastructure Evaluation}
+
+The cloud design links dataset ingestion, event triggering, transformation, database storage, and access by analytical services.
+
+The principal operations in this proposed workflow are:
+
+\begin{enumerate}
+
+\item Upload Banking Dataset
+
+\item Trigger AWS Lambda
+
+\item Execute AWS Glue ETL
+
+\item Validate Dataset
+
+\item Transform Data
+
+\item Load PostgreSQL
+
+\item Update Analytics
+
+\item Enable ML Predictions
+
+\end{enumerate}
+
+Coordinating these tasks through managed services may reduce repeated manual steps; actual efficiency gains require measurement under a defined workload.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{API Performance}
+
+FastAPI endpoints provide the communication layer between the user interface and the platform's domain services.
+
+The principal API groups are:
+
+\begin{itemize}
+
+\item Authentication APIs
+
+\item Customer APIs
+
+\item Account APIs
+
+\item Loan APIs
+
+\item Fraud APIs
+
+\item Credit APIs
+
+\item Analytics APIs
+
+\item Prediction APIs
+
+\end{itemize}
+
+FastAPI supports asynchronous endpoint handling, which can be used to manage concurrent requests. Throughput for this particular deployment has not been quantified in the supplied results.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Discussion}
+
+The prototype illustrates how an enterprise banking application can be organized around a shared relational database, bounded services, data pipelines, and interpretable inference. Its main contribution is the integration of these elements into a coherent system design.
+
+Independent service boundaries offer a practical way to separate banking responsibilities and release modules without modifying unrelated code. The architecture is therefore designed for modular maintenance; a measured comparison against a monolithic baseline is outside the reported evaluation.
+
+PostgreSQL ties together records used by customers, accounts, transactions, loans, fraud analysis, and branches. Explicit keys and constraints help keep cross-domain references consistent, while normalized tables supply structured data for operational queries and reporting.
+
+The AWS workflow assigns different responsibilities to S3, Lambda, Glue, and RDS. These components provide a route from uploaded files to validated relational records; production scaling and operating costs would need to be assessed separately.
+
+Including SHAP and LIME gives analysts a way to inspect the local factors associated with model predictions. Explanation quality and usefulness should be evaluated alongside predictive accuracy and appropriate safeguards for financial decisions.
+
+The service-oriented structure also leaves potential extension points for transaction streams, distributed ledgers, federated training, graph-based models, and language-model interfaces.
+
+Taken together, these components provide a reference implementation for connecting operational banking information with analysis and prediction. Further empirical testing would be needed to characterize reliability, latency, scalability, and the effect of explanations on user decisions.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table*}[ht]
+
+\centering
+
+\caption{Functional Evaluation of FinIntel AI}
+
+\begin{tabular}{lc}
+
+\toprule
+
+Feature & Status \\
+
+\midrule
+
+Microservices Architecture & Implemented \\
+
+Cloud Deployment & Implemented \\
+
+PostgreSQL Database & Implemented \\
+
+REST APIs & Implemented \\
+
+JWT Authentication & Implemented \\
+
+Loan Prediction & Implemented \\
+
+Fraud Detection & Implemented \\
+
+Credit Risk Prediction & Implemented \\
+
+SHAP Explainability & Implemented \\
+
+LIME Explainability & Implemented \\
+
+Interactive Dashboard & Implemented \\
+
+Prediction History & Implemented \\
+
+AWS ETL Pipeline & Implemented \\
+
+Docker Deployment & Implemented \\
+
+\bottomrule
+
+\end{tabular}
+
+\end{table*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion and Future Work}
+
+The breadth of modern banking operations makes it difficult to analyze customer and financial activity when each function relies on isolated systems. The work addressed this integration problem by considering a common data model and a service-based architecture for both operational and analytical tasks.
+
+This paper introduced \textbf{FinIntel AI}, a banking intelligence platform that combines independently organized FastAPI services with PostgreSQL, cloud data-processing components, and interpretable machine learning. Authentication, customer and account workflows, lending, fraud analysis, credit-risk functions, and reporting are connected through RESTful interfaces while retaining clear module boundaries.
+
+Fifteen relational entities represent the principal records used by the platform, including customers, accounts, transactions, lending, fraud records, branches, employees, support requests, campaigns, products, access management, and prediction histories. This shared structure provides a consistent basis for storing operational information and preparing inputs for analysis.
+
+The data engineering design uses S3, Lambda, Glue, and RDS to move source datasets through ingestion, transformation, validation, and relational loading. By making these stages explicit, the system can preserve the origin of data and identify failures before downstream applications consume the results.
+
+Prediction services address loan approval, fraud detection, and credit risk. SHAP and LIME are included to show the features associated with individual outputs, while stored prediction records support later inspection. Responsible use of these functions still depends on model evaluation, data governance, and human oversight.
+
+The React dashboard exposes information from multiple services through common views of customers, loans, fraud alerts, branch activity, transactions, and prediction history. It is intended to help authorized personnel inspect banking activity without navigating separate operational tools.
+
+The architecture brings together the data model, ETL processing, APIs, user interface, and predictive modules in a design that can be changed incrementally. This modularity is a design property; demonstrating improvements in availability or processing speed would require controlled experiments.
+
+The evaluation is limited to a prototype and architectural integration. It does not establish performance at the scale of a live bank, and it does not yet cover sustained real-time streams, large distributed deployments, or comprehensive security testing. The emphasis on supervised models and structured records also restricts the range of data and decisions evaluated.
+
+Future work could add Kafka or Pulsar to handle continuous transaction events and test fraud screening under streaming conditions. Graph neural networks, Transformer models, and temporal architectures could be compared against existing predictors using defined datasets and metrics. Federated learning is another possible direction, particularly where institutions need to keep customer data within their own boundaries.
+
+Distributed ledgers and smart contracts could be investigated for audit trails or inter-institutional workflows where their added complexity is justified. Language-model interfaces may also support natural-language reporting, question answering, or assistance with customer service, subject to appropriate safeguards and evaluation.
+
+Other extensions include Zero Trust access controls, confidential computing, privacy-aware model training, post-quantum security planning, multi-cloud operation, and automated model monitoring. Each would require explicit requirements and dedicated testing before it could be considered production-ready.
+
+FinIntel AI offers a reference design for integrating banking records, cloud-oriented data processing, modular application services, and explainable predictions. The prototype establishes a starting point for further research into reliable, transparent, and extensible banking software, with deployment-scale validation remaining a necessary next step.
+
+\section*{Conflict of Interest}
+
+The authors declare that they have no conflict of interest related to this work.
+
+\section*{Author Contributions}
+
+All authors contributed equally to the conceptualization, methodology, system design, implementation, data analysis, and preparation of the manuscript. All authors reviewed and approved the final version of the manuscript.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

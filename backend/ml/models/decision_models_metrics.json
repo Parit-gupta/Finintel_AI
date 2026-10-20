@@ -1,0 +1,42 @@
+{
+  "transaction_fraud": {
+    "rows": 328213,
+    "roc_auc": 0.9989,
+    "report": {
+      "0": {
+        "precision": 0.9993430211641039,
+        "recall": 0.998234375,
+        "f1-score": 0.9987883904353196,
+        "support": 64000.0
+      },
+      "1": {
+        "precision": 0.9340723453908985,
+        "recall": 0.9744370054777846,
+        "f1-score": 0.9538278224605302,
+        "support": 1643.0
+      },
+      "accuracy": 0.9976387428971863,
+      "macro avg": {
+        "precision": 0.9667076832775012,
+        "recall": 0.9863356902388922,
+        "f1-score": 0.9763081064479249,
+        "support": 65643.0
+      },
+      "weighted avg": {
+        "precision": 0.9977093401882896,
+        "recall": 0.9976387428971863,
+        "f1-score": 0.9976630577542633,
+        "support": 65643.0
+      }
+    }
+  },
+  "account_anomaly": {
+    "rows": 30000,
+    "model": "IsolationForest",
+    "expected_anomaly_rate": "3%"
+  },
+  "branch_profit": {
+    "rows": 1200,
+    "mae": 12776610.61
+  }
+}

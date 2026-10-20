@@ -1,0 +1,107 @@
+{
+  "features": [
+    "no_of_dependents",
+    "education",
+    "self_employed",
+    "income_annum",
+    "loan_amount",
+    "loan_term",
+    "cibil_score",
+    "residential_assets_value",
+    "commercial_assets_value",
+    "luxury_assets_value",
+    "bank_asset_value"
+  ],
+  "categorical_features": [
+    "education",
+    "self_employed"
+  ],
+  "numeric_features": [
+    "no_of_dependents",
+    "income_annum",
+    "loan_amount",
+    "loan_term",
+    "cibil_score",
+    "residential_assets_value",
+    "commercial_assets_value",
+    "luxury_assets_value",
+    "bank_asset_value"
+  ],
+  "target": "loan_status",
+  "classes": [
+    "Approved",
+    "Rejected"
+  ],
+  "approved_label": "Approved",
+  "best_model_name": "Gradient Boosting",
+  "selection_metric": "roc_auc",
+  "metrics": {
+    "accuracy": 0.9824,
+    "precision": 0.9796,
+    "recall": 0.9925,
+    "f1_score": 0.986,
+    "roc_auc": 0.9981
+  },
+  "all_results": {
+    "Logistic Regression": {
+      "accuracy": 0.9356,
+      "precision": 0.9542,
+      "recall": 0.9416,
+      "f1_score": 0.9479,
+      "roc_auc": 0.9748
+    },
+    "Decision Tree": {
+      "accuracy": 0.9754,
+      "precision": 0.9811,
+      "recall": 0.9793,
+      "f1_score": 0.9802,
+      "roc_auc": 0.9852
+    },
+    "Random Forest": {
+      "accuracy": 0.9719,
+      "precision": 0.981,
+      "recall": 0.9736,
+      "f1_score": 0.9773,
+      "roc_auc": 0.9959
+    },
+    "Gradient Boosting": {
+      "accuracy": 0.9824,
+      "precision": 0.9796,
+      "recall": 0.9925,
+      "f1_score": 0.986,
+      "roc_auc": 0.9981
+    },
+    "KNN": {
+      "accuracy": 0.9344,
+      "precision": 0.9439,
+      "recall": 0.951,
+      "f1_score": 0.9475,
+      "roc_auc": 0.9731
+    },
+    "SVM": {
+      "accuracy": 0.9496,
+      "precision": 0.971,
+      "recall": 0.9473,
+      "f1_score": 0.959,
+      "roc_auc": 0.9842
+    }
+  },
+  "feature_importances": {
+    "numeric__cibil_score": 0.8621570628415725,
+    "numeric__loan_term": 0.09827779007302187,
+    "numeric__loan_amount": 0.018846023697800137,
+    "numeric__income_annum": 0.007689219793935807,
+    "numeric__luxury_assets_value": 0.005031794039869398,
+    "numeric__residential_assets_value": 0.0023924085842939188,
+    "numeric__bank_asset_value": 0.002367299206475785,
+    "numeric__commercial_assets_value": 0.0023317967569116633,
+    "numeric__no_of_dependents": 0.000775508627494619,
+    "categorical__self_employed_Yes": 0.00012779073475626489,
+    "categorical__self_employed_No": 3.3056438679760917e-06,
+    "categorical__education_Graduate": 0.0,
+    "categorical__education_Not Graduate": 0.0
+  },
+  "training_rows": 3415,
+  "test_rows": 854,
+  "random_state": 42
+}

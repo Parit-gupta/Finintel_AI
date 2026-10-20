@@ -1,0 +1,4 @@
+[global]
+
+[server]
+headless = true
